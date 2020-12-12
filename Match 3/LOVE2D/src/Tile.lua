@@ -13,6 +13,7 @@
 
 Tile = Class{}
 
+sparkles = love.graphics.newImage('graphics/sparkles.png')
 function Tile:init(x, y, color, variety)
     
     -- board positions
@@ -26,6 +27,8 @@ function Tile:init(x, y, color, variety)
     -- tile appearance/points
     self.color = color
     self.variety = variety
+
+    self.shiny = false
 end
 
 function Tile:render(x, y)
@@ -39,4 +42,7 @@ function Tile:render(x, y)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(gTextures['main'], gFrames['tiles'][self.color][self.variety],
         self.x + x, self.y + y)
+        if self.shiny == true then
+            love.graphics.draw(sparkles,self.x + x, self.y + y , 0, 0.025, 0.025)
+                end
 end

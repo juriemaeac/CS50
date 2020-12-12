@@ -13,15 +13,41 @@
 
 Board = Class{}
 
-function Board:init(x, y)
+COLOR_TABLE = {1,2,5,6,9,10,13,14,17,18,3,4,7,8,11,12,15,16}
+shinyChance = 10
+COLOR_INIT = 6
+
+
+function Board:init(x, y, level)
     self.x = x
     self.y = y
     self.matches = {}
+    self.level = level 
 
-    self:initializeTiles()
+    self.checking = false
+
+    self.resetting = false
+
+    particle = love.graphics.newImage('graphics/particle.png')
+self.pSystem = love.graphics.newParticleSystem(particle, 200)
+self.pSystem:setParticleLifetime(0.1, 0.5)
+self.pSystem:setColors(255, 255, 0, 255, 255, 255, 255, 255)
+
+
+    self:initializeTiles(self.level)
+
+    
+    
+-- particle system, orientation denotes horizontal or vertical while number denotes nth row or column
+self.orientation = 'h'
+self.number = 1
+
+self.ctr = 0
 end
 
-function Board:initializeTiles()
+
+
+function Board:initializeTiles(level)
     self.tiles = {}
 
     for tileY = 1, 8 do
@@ -32,7 +58,13 @@ function Board:initializeTiles()
         for tileX = 1, 8 do
             
             -- create a new tile at X,Y with a random color and variety
-            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(18), math.random(6)))
+            local var_variety = math.random(math.min(math.floor((self.level+1)/3), 6) )
+            local var_color = COLOR_TABLE[math.random(math.min(math.floor(COLOR_INIT + self.level/2), 18))]
+            local t = Tile(tileX, tileY, var_color, var_variety)
+            if math.random(shinyChance) == 1 then
+            t.shiny = true
+            end
+            table.insert(self.tiles[tileY], t)
         end
     end
 
@@ -40,7 +72,7 @@ function Board:initializeTiles()
         
         -- recursively initialize if matches were returned so we always have
         -- a matchless board on start
-        self:initializeTiles()
+        self:initializeTiles(self.level)
     end
 end
 
@@ -80,7 +112,15 @@ function Board:calculateMatches()
                     for x2 = x - 1, x - matchNum, -1 do
                         
                         -- add each tile to the match that's in that match
-                        table.insert(match, self.tiles[y][x2])
+                        if self.tiles[y][x2].shiny == true then
+                            self:shiny_blast('h', y)
+                            for x_tile = 1,8 do 
+                                table.insert(match, self.tiles[y][x_tile])
+                            end
+                            break
+                        else
+                            table.insert(match, self.tiles[y][x2])
+                        end
                     end
 
                     -- add this match to our total matches table
@@ -102,7 +142,15 @@ function Board:calculateMatches()
             
             -- go backwards from end of last row by matchNum
             for x = 8, 8 - matchNum + 1, -1 do
-                table.insert(match, self.tiles[y][x])
+                if self.tiles[y][x].shiny == true then
+                    self:shiny_blast('h', y)
+                    for x_tile = 1,8 do 
+                        table.insert(match, self.tiles[y][x_tile])
+                    end
+                    break
+                else
+                    table.insert(match, self.tiles[y][x])
+                end
             end
 
             table.insert(matches, match)
@@ -126,7 +174,16 @@ function Board:calculateMatches()
                     local match = {}
 
                     for y2 = y - 1, y - matchNum, -1 do
-                        table.insert(match, self.tiles[y2][x])
+                        if self.tiles[y2][x].shiny == true then
+                            self:shiny_blast('v', x)
+                            for y_tile = 1,8 do 
+                                table.insert(match, self.tiles[y_tile][x])
+                            end
+                            
+                            break
+                        else
+                            table.insert(match, self.tiles[y2][x])
+                        end
                     end
 
                     table.insert(matches, match)
@@ -147,7 +204,16 @@ function Board:calculateMatches()
             
             -- go backwards from end of last row by matchNum
             for y = 8, 8 - matchNum + 1, -1 do
-                table.insert(match, self.tiles[y][x])
+                if self.tiles[y][x].shiny == true then
+                    self:shiny_blast('v', x)
+                    for y_tile = 1,8 do 
+                        table.insert(match, self.tiles[y_tile][x])
+                    end
+                   
+                    break
+                else
+                    table.insert(match, self.tiles[y][x])
+                end
             end
 
             table.insert(matches, match)
@@ -171,6 +237,8 @@ function Board:removeMatches()
             self.tiles[tile.gridY][tile.gridX] = nil
         end
     end
+
+
 
     self.matches = nil
 end
@@ -240,8 +308,14 @@ function Board:getFallingTiles()
             if not tile then
 
                 -- new tile with random color and variety
-                local tile = Tile(x, y, math.random(18), math.random(6))
+                local var_variety = math.random(math.min(math.floor((self.level+1)/3), 6))
+                local var_color = COLOR_TABLE[math.random(math.min(math.floor(COLOR_INIT + self.level/2), 18))]
+                local tile = Tile(x, y, var_color, var_variety)
                 tile.y = -32
+                if math.random(shinyChance) == 1 then
+                    tile.shiny = true
+                end
+
                 self.tiles[y][x] = tile
 
                 -- create a new tween to return for this tile to fall down
@@ -262,3 +336,149 @@ function Board:render()
         end
     end
 end
+
+function Board:update(dt)
+    self.pSystem:update(dt)
+end
+
+function Board:renderParticles()
+    if self.orientation == 'h' then
+        love.graphics.draw(self.pSystem,self.x + 128, self.y + self.number * 32 - 16) 
+    elseif self.orientation == 'v' then
+        love.graphics.draw(self.pSystem, self.x + self.number * 32 - 16, self.y + 128)
+    end
+end
+
+function Board:renderReset()
+    if self.resetting == true then
+        love.graphics.setColor(255, 255, 255, 128)
+        love.graphics.rectangle('fill', VIRTUAL_WIDTH - 272, 16, 256, 256)
+        love.graphics.setColor(0,0,0,255)
+        love.graphics.setFont(gFonts['large'])
+        self.ctr = self.ctr + 1
+        print(self.ctr)
+        love.graphics.print("RESETTING", self.x + 64, self.y + 112)
+        love.graphics.setColor(255, 255, 255, 255)
+    end
+end
+function Board:shiny_blast(orientation, number)
+
+    if self.checking == false then
+    gSounds['line-clear']:play()
+    self.orientation = orientation
+    self.number = number
+    if self.orientation == 'h' then
+    self.pSystem:setEmissionArea('borderrectangle', 120, 10)
+    self.pSystem:setLinearAcceleration(-100, -1, 100, 1)
+    elseif self.orientation == 'v' then
+    self.pSystem:setEmissionArea('borderrectangle', 10, 120)
+    self.pSystem:setLinearAcceleration(-1, -100, 1, 100)
+    end
+    self.pSystem:emit(200)
+    end
+end
+
+function Board:boardCheck()
+
+    self.checking = true
+
+    -- check for any possible horizontal swaps
+        for i =  1,8 do 
+            for j = 1, 7 do
+                self:swap(i, j, i, j+1)
+                if self:calculateMatches()  then
+                    self:swap(i, j, i, j+1)
+                    self.checking = false
+                    return true
+                else
+                    self:swap(i, j, i, j+1)
+                end
+            end
+        end
+        -- check for vertical matches
+        for j =  1,8 do 
+            for i = 1, 7 do
+                self:swap(i, j, i + 1, j)
+                if self:calculateMatches() then
+                    self:swap(i, j, i + 1, j)
+                    self.checking = false
+                    return true
+                else
+                self:swap(i, j, i + 1, j)
+                end
+            end
+        end
+
+    self.checking = false
+    return false
+end
+
+
+function Board:swap(x1, y1, x2, y2)             -- we supply the gridX, gridY values of the tiles we want to swap
+
+    local tile1 = self.tiles[y1][x1]
+    local tile2 = self.tiles[y2][x2]
+
+    local tempX = tile1.gridX
+    local tempY = tile1.gridY
+
+    -- swapping
+    tile1.gridX = tile2.gridX
+    tile1.gridY = tile2.gridY
+    tile2.gridX = tempX
+    tile2.gridY = tempY
+
+    self.tiles[tile1.gridY][tile1.gridX] =
+    tile1
+
+    self.tiles[tile2.gridY][tile2.gridX] = tile2
+end
+
+function Board:resetAnimated()
+  
+        local x1, y1, x2, y2 = math.random(8), math.random(8), math.random(8), math.random(8)
+        print("("..tostring(x1)..","..tostring(y1)..") ("..tostring(x2)..","..tostring(y2)..")")
+        local tile1 = self.tiles[y1][x1]
+        local tile2 = self.tiles[y2][x2]
+        self:swap(x1, y1, x2, y2)
+        Timer.tween(0.1,{
+            [tile1] ={x = tile2.x, y = tile2.y},
+            [tile2] = {x = tile1.x, y = tile1.y}
+        })
+        :finish(function()
+            if self:boardCheck() == false then
+                self:resetAnimated()
+            end
+
+        end
+        )   
+end
+
+function Board:reset()
+   self.resetting = true
+
+   while self:boardCheck() == false do
+   self:init(self.x, self.y, self.level)
+   end
+
+   self.resetting = true
+
+   Timer.after(1, 
+   function()
+    self.resetting = false
+   end)
+end
+
+function Board:resetR()
+    
+    self.resetting = true
+    
+    self:init(self.x, self.y, self.level)
+
+    self.resetting = true
+ 
+    Timer.after(1, 
+    function()
+     self.resetting = false
+    end)
+ end

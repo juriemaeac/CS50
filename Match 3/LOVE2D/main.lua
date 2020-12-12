@@ -27,11 +27,16 @@
     http://cpetry.github.io/TextureGenerator-Online/
 ]]
 
+
 -- initialize our nearest-neighbor filter
 love.graphics.setDefaultFilter('nearest', 'nearest')
 
 -- this time, we're keeping all requires and assets in our Dependencies.lua file
 require 'src/Dependencies'
+
+-- patches from external libraries
+cindy.applyPatch()
+
 
 -- physical screen dimensions
 WINDOW_WIDTH = 1280
@@ -49,6 +54,11 @@ function love.load()
     -- window bar title
     love.window.setTitle('Match 3')
 
+    
+
+    cursor = love.mouse.getCursor()
+
+    
     -- seed the RNG
     math.randomseed(os.time())
 
@@ -98,6 +108,19 @@ function love.keyboard.wasPressed(key)
     end
 end
 
+
+function love.mousepressed(x, y, button, istouch, presses)
+    love.mouse.buttons[button] = true
+end
+
+function love.mouse.wasPressed(button)
+    if love.mouse.buttons[button] then
+        return true
+    else
+        return false
+    end
+end
+
 function love.update(dt)
     
     -- scroll background, used across all states
@@ -111,6 +134,17 @@ function love.update(dt)
     gStateMachine:update(dt)
 
     love.keyboard.keysPressed = {}
+
+    love.mouse.buttons = {}
+
+    if love.mouse.isDown(2) then
+    print("normal: ")
+    print(love.mouse.getPosition())
+    print("game: ")
+    print(push:toGame(love.mouse.getPosition()))
+    end
+
+    
 end
 
 function love.draw()
