@@ -63,9 +63,6 @@ function love.load()
     -- important for a nice crisp, 2D look
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
-    --background picture initialization
-    background = love.graphics.newImage("background.png")
-
     --middle line
     midLine = love.graphics.newImage("midline.png")
 
@@ -324,8 +321,7 @@ end
 ]]
 function love.draw()
     -- begin drawing with push, in our virtual resolution
-    love.graphics.setBackgroundColor(255,255,255)
-    love.graphics.draw(background)
+    love.graphics.setBackgroundColor(255,255,255,255)
     push:apply('start')
 	
 	--love.graphics.clear(40/255, 45/255, 52/255, 255/255)
@@ -338,7 +334,7 @@ function love.draw()
     if gameState == 'start' then
         -- UI messages
         love.graphics.setFont(smallFont)
-        love.graphics.setColor(0, 0, 0)
+        love.graphics.setColor(255, 255, 255,255)
         love.graphics.printf('Welcome to Pong!', 0, 30, VIRTUAL_WIDTH, 'center')
         love.graphics.rectangle('line', VIRTUAL_WIDTH / 2 - 160, VIRTUAL_HEIGHT / 2 - 40, 320, 80)
         love.graphics.printf('Press Enter to start!', 0, VIRTUAL_HEIGHT / 2 - 6, VIRTUAL_WIDTH, 'center')
@@ -347,7 +343,7 @@ function love.draw()
 		-- To put up AI mode functions
 		if aiMode == false then
             love.graphics.setFont(smallFont)
-            love.graphics.setColor(0, 0, 0)
+            love.graphics.setColor(255, 255, 255,255)
 			love.graphics.printf('To play with AI, press A!', 0, 50, VIRTUAL_WIDTH, 'center')
             love.graphics.setFont(smallFont)
 			love.graphics.printf('AI Mode: ' .. tostring(aiMode), 0, 185, VIRTUAL_WIDTH, 'center')
@@ -361,7 +357,7 @@ function love.draw()
         -- UI messages
 
         love.graphics.setFont(smallFont)
-        love.graphics.setColor(0, 0, 0)
+        love.graphics.setColor(255, 255, 255,255)
         love.graphics.printf("Player " .. tostring(servingPlayer) .. " serve next!\nPress enter when ready",
         0, 30, VIRTUAL_WIDTH, 'center')
         ball:render()
@@ -374,7 +370,7 @@ function love.draw()
     elseif gameState == 'done' then
         -- UI messages
         love.graphics.setFont(largeFont)
-        love.graphics.setColor(0, 0, 0)
+        love.graphics.setColor(255, 255, 255,255)
         love.graphics.printf("Player " .. tostring(winningPlayer) .. ' wins!',0, 150, VIRTUAL_WIDTH, 'center')
         love.graphics.setFont(smallFont)
         love.graphics.printf('Press Enter to restart!', 0, VIRTUAL_HEIGHT/2 + 80, VIRTUAL_WIDTH, 'center')
@@ -417,7 +413,7 @@ function displayScore()
     elseif player1Score > AIplayerScore then
         love.graphics.setColor(255, 0, 0)
     else
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(255, 255, 255, 255)
     end
     love.graphics.print(tostring(AIplayerScore), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
 end
