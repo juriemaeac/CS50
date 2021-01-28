@@ -11,13 +11,17 @@ local SoftObject = require 'softObject'
 local Wall = require 'wall'
 local Map = require 'map'
 local cron = require 'cron'
-
-local seconds = 150
+local seconds = 180
+local msg = " "
 local timer = cron.every(1, function() seconds = seconds - 1 end)
+local atimer = cron.after(5, function() msg = "TIMES'S UP!!!" end) -- palitan nyo na lang yung value nung second kung gaano tagal dapat (yung 5)
 love.graphics.setDefaultFilter("nearest", "nearest")
 
-width, height = love.graphics.getDimensions()
-screen:setDimensions(width, height)
+local WINDOW_WIDTH = 1280
+local WINDOW_HEIGHT = 720
+
+local VIRTUAL_WIDTH = 432
+local VIRTUAL_HEIGHT = 243
 
 audio = {
 	battleMusic = love.audio.newSource('res/audio/music/background.mp3', 'stream'),
@@ -72,9 +76,8 @@ function love.load() -----------------------------------------------------------
 
 	love.graphics.setDefaultFilter('nearest', 'nearest')
 	smallFont = love.graphics.newFont('font.ttf', 30)
-    love.graphics.setFont(smallFont)
+	love.graphics.setFont(smallFont)
 end
-
 function love.update(dt) ------------------------------------------------------------------------------------
 	map:update(dt)
 	screen:update(dt)
@@ -95,6 +98,7 @@ function love.update(dt) -------------------------------------------------------
 		table.remove(objects, index)
 	end
 	timer:update(dt)
+	atimer:update(dt)
 end
 
 function love.draw() ----------------------------------------------------------------------------------------
@@ -138,7 +142,8 @@ function love.draw() -----------------------------------------------------------
 	love.graphics.draw(arena, 43 - 15, 19 - 15, 0, 1, 1, 0, 0)
 	love.graphics.pop()
 
-	love.graphics.print("Timer: "..seconds, 5, 25)
+	love.graphics.print("Timer: "..seconds, 5, 25) -- location ng timer
+	love.graphics.print(msg, 1000, 14) -- andito po yung location nung time's up. 
 end
 
 function love.keypressed(key)
