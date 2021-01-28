@@ -10,7 +10,10 @@ local Bomb = require 'bomb'
 local SoftObject = require 'softObject'
 local Wall = require 'wall'
 local Map = require 'map'
+local cron = require 'cron'
 
+local seconds = 60
+local timer = cron.every(1, function() seconds = seconds - 1 end)
 love.graphics.setDefaultFilter("nearest", "nearest")
 
 width, height = love.graphics.getDimensions()
@@ -66,6 +69,10 @@ function love.load() -----------------------------------------------------------
 	arena = love.graphics.newCanvas(map.width * map.tilewidth, map.height * map.tileheight)
 
 	audio.battleMusic:play()
+
+	love.graphics.setDefaultFilter('nearest', 'nearest')
+	smallFont = love.graphics.newFont('font.ttf', 30)
+    love.graphics.setFont(smallFont)
 end
 
 function love.update(dt) ------------------------------------------------------------------------------------
@@ -87,6 +94,7 @@ function love.update(dt) -------------------------------------------------------
 		local index = toRemove[i]
 		table.remove(objects, index)
 	end
+	timer:update(dt)
 end
 
 function love.draw() ----------------------------------------------------------------------------------------
@@ -129,6 +137,8 @@ function love.draw() -----------------------------------------------------------
 	love.graphics.draw(background, 38, 0, 0, 1, 1, 0, 0)
 	love.graphics.draw(arena, 43 - 15, 19 - 15, 0, 1, 1, 0, 0)
 	love.graphics.pop()
+
+	love.graphics.print("Timer: "..seconds, 5, 20)
 end
 
 function love.keypressed(key)
