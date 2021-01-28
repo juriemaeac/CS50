@@ -12,7 +12,7 @@ local Wall = require 'wall'
 local Map = require 'map'
 local cron = require 'cron'
 
-local seconds = 180
+local seconds = 150
 local timer = cron.every(1, function() seconds = seconds - 1 end)
 love.graphics.setDefaultFilter("nearest", "nearest")
 
