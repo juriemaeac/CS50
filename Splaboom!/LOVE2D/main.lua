@@ -12,7 +12,7 @@ local Wall = require 'wall'
 local Map = require 'map'
 local cron = require 'cron'
 
-local seconds = 60
+local seconds = 180
 local timer = cron.every(1, function() seconds = seconds - 1 end)
 love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -138,7 +138,7 @@ function love.draw() -----------------------------------------------------------
 	love.graphics.draw(arena, 43 - 15, 19 - 15, 0, 1, 1, 0, 0)
 	love.graphics.pop()
 
-	love.graphics.print("Timer: "..seconds, 5, 20)
+	love.graphics.print("Timer: "..seconds, 5, 25)
 end
 
 function love.keypressed(key)
