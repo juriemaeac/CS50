@@ -138,7 +138,7 @@ function love.draw() -----------------------------------------------------------
 	love.graphics.draw(arena, 43 - 15, 19 - 15, 0, 1, 1, 0, 0)
 	love.graphics.pop()
 
-	love.graphics.print("Timer: "..seconds, 5, 25)
+	love.graphics.print("Timer: "..seconds, 5, 20)
 end
 
 function love.keypressed(key)
