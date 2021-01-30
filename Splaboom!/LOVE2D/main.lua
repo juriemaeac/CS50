@@ -13,14 +13,10 @@ local cron = require 'cron'
 local seconds = 180
 local msg = " "
 local timer = cron.every(1, function() seconds = seconds - 1 end)
-local atimer = cron.after(5, function() msg = "TIMES'S UP!!!" end) -- palitan nyo na lang yung value nung second kung gaano tagal dapat (yung 5)
+--after 180 secs saka lalabas
+local atimer = cron.after(180, function() msg = "TIMES'S UP!!!" end) 
 love.graphics.setDefaultFilter("nearest", "nearest")
 
-local WINDOW_WIDTH = 1280
-local WINDOW_HEIGHT = 720
-
-local VIRTUAL_WIDTH = 432
-local VIRTUAL_HEIGHT = 243
 
 audio = {
 	battleMusic = love.audio.newSource('res/audio/music/background.mp3', 'stream'),
@@ -33,8 +29,9 @@ debug = false
 
 function love.load() ----------------------------------------------------------------------------------------
 	world = bump.newWorld()
-	math.randomseed(os.time())
-	map = Map('res/maps/dungeon')
+
+	--background and tiles
+	map = Map('dungeon')
 	safetyGrid = {}
 	for y = 1, map.height do
 		safetyGrid[y] = {}
@@ -46,9 +43,9 @@ function love.load() -----------------------------------------------------------
 	player = Player(15, 15)
 	world:add(player, player.position.x, player.position.y, player.width, player.height)
 	
-	--enemy1 = Enemy(15 * 17, 15 * 11)
+	--enemy1 = Enemy(15 * 17, 15 * 11) lower right ung location (pwede pang AI)
 	enemy2 = Enemy(15 * 17, 15)
-	--enemy3 = Enemy(15, 15 * 11)
+	--enemy3 = Enemy(15, 15 * 11) lower left ung location (pwede pang AI)
 	--objects = {player, enemy1, enemy2, enemy3}
 	objects = {player, enemy2}
 
@@ -67,13 +64,15 @@ function love.load() -----------------------------------------------------------
 		end
 	end)
 
-	--window size
+	--whole game size
 	scale = 3.3
 	background = love.graphics.newCanvas(width, height)
 	arena = love.graphics.newCanvas(map.width * map.tilewidth, map.height * map.tileheight)
 
 	audio.battleMusic:play()
-	--timer
+	audio.battleMusic:setLooping(true)
+
+	--timer and score font and size
 	love.graphics.setDefaultFilter('nearest', 'nearest')
 	smallFont = love.graphics.newFont('font.ttf', 30)
 	xsmallFont = love.graphics.newFont('font.ttf', 20)
@@ -106,21 +105,27 @@ function love.draw() -----------------------------------------------------------
 	
 	--timer
 	love.graphics.setFont(smallFont)
-	love.graphics.print("Timer: "..seconds, 50, 10) -- location ng timer
-	love.graphics.print(msg, 1050, 14) -- andito po yung location nung time's up. 
+	--need pa ayusin timer, nag nenegative
+	--kapag nag 0 times up then game over lalabas na ung winner
+	love.graphics.print("Timer: "..seconds, 50, 10) 
+
+	--need ayusin kapag lumabas to game over na
+	--WE NEED STATES
+	love.graphics.print(msg, 1050, 14) 
 	love.graphics.setCanvas()
+
 	--score
+	--no score pa wala pang colored tiles
 	love.graphics.setFont(smallFont)
 	love.graphics.print("Player1 Score: ", 300, 10) 
 	love.graphics.print("Player2 Score: ", 700, 10) 
 	
 
-	-- y-sort objectseqw
+	-- y-sort objects
+	--kapag pinindot tab while in playing lalabas ung gridlines and fps
 	table.sort(objects, function(a, b)
 		return a.position.y + a.height < b.position.y + b.height
 	end)
-	
-	
 	love.graphics.setCanvas(arena)
 	love.graphics.clear()
 	map:drawWalls(0, 0)
@@ -135,24 +140,21 @@ function love.draw() -----------------------------------------------------------
 		end
 		love.graphics.print('FPS: ' .. love.timer.getFPS())
 	end
-	
-
-	
 
 	love.graphics.setCanvas(background)
 	
+	--floor
 	map:drawFloor(68 - 15, 34 - 15)
 
-	
 	love.graphics.draw(map.background)
 	love.graphics.setCanvas()
-
-	
 
 	screen:apply()
 	love.graphics.push()
 	love.graphics.scale(scale)
+	--background (width, height)
 	love.graphics.draw(background, 15, 15, 0, 1, 1, 0, 0)
+	--crates (width, height)
 	love.graphics.draw(arena, 67 - 15, 34 - 15, 0, 1, 1, 0, 0)
 	love.graphics.pop()
 
