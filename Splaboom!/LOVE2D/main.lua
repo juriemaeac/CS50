@@ -1,7 +1,5 @@
 local bump = require "lib/bump"
 local screen = require "lib/shack/shack"
---local play = require 'state/playstate'
---local base = require 'state/basestate'
 local Vector = require 'vector'
 local Player = require 'player'
 local Enemy = require 'enemy'
@@ -10,9 +8,11 @@ local SoftObject = require 'softObject'
 local Wall = require 'wall'
 local Map = require 'map'
 local cron = require 'cron'
-local seconds = 180
+
+local seconds = 180 --time limit
 local msg = " "
 local timer = cron.every(1, function() seconds = seconds - 1 end)
+
 --after 180 secs saka lalabas
 local atimer = cron.after(180, function() msg = "TIMES'S UP!!!" end) 
 love.graphics.setDefaultFilter("nearest", "nearest")
@@ -69,6 +69,7 @@ function love.load() -----------------------------------------------------------
 	background = love.graphics.newCanvas(width, height)
 	arena = love.graphics.newCanvas(map.width * map.tilewidth, map.height * map.tileheight)
 
+	--background music loop
 	audio.battleMusic:play()
 	audio.battleMusic:setLooping(true)
 
