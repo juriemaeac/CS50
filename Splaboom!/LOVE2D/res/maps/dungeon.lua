@@ -1,11 +1,11 @@
 local data = {}
 
-data.background = love.graphics.newImage('res/tiles/BGArena3.png')
+data.background = love.graphics.newImage('res/tiles/BGArena4.png')
 data.tileset = love.graphics.newImage('res/tiles/tileset_dungeon1.png')
 data.tilesetWidth = data.tileset:getWidth()
 data.tilesetHeight = data.tileset:getHeight()
 data.walls = {
-	love.graphics.newQuad(15, 0, 15, 17, data.tilesetWidth, data.tilesetHeight),
+	love.graphics.newQuad(16, 0, 16, 16, data.tilesetWidth, data.tilesetHeight),
 }
 data.floors = {
 	love.graphics.newQuad(0, 0, 15, 15, data.tilesetWidth, data.tilesetHeight),

@@ -1,4 +1,4 @@
-local Bomb = require 'bomb'
+--[[local Bomb = require 'bomb'
 local Vector = require 'vector'
 local SoftObject = require 'softObject'
 
@@ -30,3 +30,4 @@ function Colored:draw()
 end
 
 return Colored
+]]

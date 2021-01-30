@@ -4,7 +4,6 @@ local screen = require "lib/shack/shack"
 --local base = require 'state/basestate'
 local Vector = require 'vector'
 local Player = require 'player'
---local Player = require 'opponent'
 local Enemy = require 'enemy'
 local Bomb = require 'bomb'
 local SoftObject = require 'softObject'
@@ -68,15 +67,17 @@ function love.load() -----------------------------------------------------------
 		end
 	end)
 
-	scale = 4.0
+	--window size
+	scale = 3.3
 	background = love.graphics.newCanvas(width, height)
 	arena = love.graphics.newCanvas(map.width * map.tilewidth, map.height * map.tileheight)
 
 	audio.battleMusic:play()
-
+	--timer
 	love.graphics.setDefaultFilter('nearest', 'nearest')
 	smallFont = love.graphics.newFont('font.ttf', 30)
-	love.graphics.setFont(smallFont)
+	xsmallFont = love.graphics.newFont('font.ttf', 20)
+	
 end
 function love.update(dt) ------------------------------------------------------------------------------------
 	map:update(dt)
@@ -102,20 +103,27 @@ function love.update(dt) -------------------------------------------------------
 end
 
 function love.draw() ----------------------------------------------------------------------------------------
-	--love.graphics.setColor(255, 255, 255, 255) 
-    --love.graphics.newFont('font/zelda.otf', 10)
-    --love.graphics.printf('Score: ' .. tostring(self.score), 20, 52, 182, 'left')
-    --love.graphics.printf('Timer: ' .. tostring(timer), 20, 108, 182, 'left')
 	
-	-- y-sort objects
+	--timer
+	love.graphics.setFont(smallFont)
+	love.graphics.print("Timer: "..seconds, 50, 10) -- location ng timer
+	love.graphics.print(msg, 1050, 14) -- andito po yung location nung time's up. 
+	love.graphics.setCanvas()
+	--score
+	love.graphics.setFont(smallFont)
+	love.graphics.print("Player1 Score: ", 300, 10) 
+	love.graphics.print("Player2 Score: ", 700, 10) 
+	
+
+	-- y-sort objectseqw
 	table.sort(objects, function(a, b)
 		return a.position.y + a.height < b.position.y + b.height
 	end)
-
+	
+	
 	love.graphics.setCanvas(arena)
 	love.graphics.clear()
 	map:drawWalls(0, 0)
-
 	for _, object in ipairs(objects) do
 		object:draw()
 	end
@@ -127,23 +135,27 @@ function love.draw() -----------------------------------------------------------
 		end
 		love.graphics.print('FPS: ' .. love.timer.getFPS())
 	end
+	
 
-	love.graphics.setCanvas()
+	
 
 	love.graphics.setCanvas(background)
-	map:drawFloor(23 - 15, 19 - 15)
+	
+	map:drawFloor(68 - 15, 34 - 15)
+
+	
 	love.graphics.draw(map.background)
 	love.graphics.setCanvas()
+
+	
 
 	screen:apply()
 	love.graphics.push()
 	love.graphics.scale(scale)
-	love.graphics.draw(background, 38, 0, 0, 1, 1, 0, 0)
-	love.graphics.draw(arena, 43 - 15, 19 - 15, 0, 1, 1, 0, 0)
+	love.graphics.draw(background, 15, 15, 0, 1, 1, 0, 0)
+	love.graphics.draw(arena, 67 - 15, 34 - 15, 0, 1, 1, 0, 0)
 	love.graphics.pop()
 
-	love.graphics.print("Timer: "..seconds, 5, 25) -- location ng timer
-	love.graphics.print(msg, 1000, 14) -- andito po yung location nung time's up. 
 end
 
 function love.keypressed(key)
