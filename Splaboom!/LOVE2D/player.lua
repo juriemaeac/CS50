@@ -18,7 +18,7 @@ function Player:new(x, y)
 	self.usedBombs = 0
 	self.bombRadius = 1
 	self.powerUps = {}
-	self.sprite = love.graphics.newImage('res/sprites/player_sprites1.png')
+	self.sprite = love.graphics.newImage('res/sprites/player_sprites2.png')
 	self.grid = anim8.newGrid(15, 19, self.sprite:getWidth(), self.sprite:getHeight())
 	self.animations = {
 		walkUp = anim8.newAnimation(self.grid('1-3', 1), 0.1),
