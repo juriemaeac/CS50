@@ -4,13 +4,14 @@ local sodapop = require "lib/sodapop"
 local Vector = require 'vector'
 local PowerUp = require 'powerUp'
 local Debris = require 'debris'
-
+local Debris = require 'debris'
+local DebrisEnemy = require 'debrisEnemy'
 local SoftObject = Object:extend()
 
 function SoftObject:new(x, y, variant)
   self.position = Vector(x, y)
-  self.width = 17
-  self.height = 17
+  self.width = 15
+  self.height = 15
   self.origin = Vector(0, -2)
   self.state = 1
   self.variant = variant
@@ -65,6 +66,11 @@ end
 function SoftObject:DebrisDestruction()
 	local debris = Debris(self.position.x, self.position.y)
 	table.insert(objects, debris)
+end
+
+function SoftObject:DebrisEnemyDestruction()
+	local debrisEnemy = DebrisEnemy(self.position.x, self.position.y)
+	table.insert(objects, debrisEnemy)
 end
 
 return SoftObject

@@ -159,7 +159,7 @@ end
 
 function Bomb:checkTiles()
 	local Player = require 'player'
-	local Opponent = require 'opponent'
+	local Enemy = require 'enemy'
 	local Wall = require 'wall'
 	local collisions = {}
 	local tiles = {map:toTile(self.position)}
@@ -167,7 +167,7 @@ function Bomb:checkTiles()
 
 	local items, _ = world:queryRect(self.position.x, self.position.y, self.width, self.height)
 	for _, item in ipairs(items) do
-		if item:is(Wall) or item:is(SoftObject) or item:is(Player) or item:is(Opponent) then
+		if item:is(Wall) or item:is(SoftObject) or item:is(Player) or item:is(Enemy) then
 			table.insert(collisions, item)
 			break
 		end
@@ -179,7 +179,7 @@ function Bomb:checkTiles()
 			local tile = self.position + (dir * i * 15)
 			local items, _ = world:queryRect(tile.x, tile.y, self.width, self.height)
 			for _, item in ipairs(items) do
-				if item:is(Wall) or item:is(SoftObject) or item:is(Player) or item:is(Opponent) then
+				if item:is(Wall) or item:is(SoftObject) or item:is(Player) or item:is(Enemy) then
 					table.insert(collisions, item)
 					hit = true
 				end

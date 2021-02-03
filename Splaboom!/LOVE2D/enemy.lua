@@ -11,8 +11,8 @@ local Enemy = Object:extend()
 
 function Enemy:new(x, y)
 	self.position = Vector(x, y)
-	self.width = 15
-	self.height = 15
+	self.width = 12
+	self.height = 12
 	self.origin = Vector(2, 6)
 	self.direction = Vector(0, 1)
 	self.animation = 'idleDown'

@@ -142,7 +142,7 @@ function Bomb:check(x, y)
 		elseif item:is(SoftObject) then
 			item.destroyed = true
 			item:SpawnPowerUp()
-			item:DebrisDestruction()
+			item:DebrisEnemyDestruction()
 			
 			world:remove(item)
 			hit = 2

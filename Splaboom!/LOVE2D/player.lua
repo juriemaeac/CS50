@@ -9,8 +9,8 @@ local Player = Object:extend()
 
 function Player:new(x, y)
   self.position = Vector(x, y)
-  self.width = 11
-  self.height = 11
+  self.width = 12
+  self.height = 12
   self.origin = Vector(2, 6)
   self.direction = Vector(0, 1)
 	self.speed = 40
