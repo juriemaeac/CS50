@@ -51,6 +51,7 @@ function love.load() -----------------------------------------------------------
 	objects = {player, enemy2}
 
 
+
 	map:foreach(function(x, y, tile, collidable)
 		local chance = math.random()
 		if collidable == 0 and not map:isSpawnLocation(x, y) and chance < 0.7 then

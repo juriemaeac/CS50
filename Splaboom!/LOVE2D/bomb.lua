@@ -135,7 +135,7 @@ end
 
 function Bomb:check(x, y)
 	local Player = require 'player'
-	local Opponent = require 'opponent'
+	local Enemy = require 'enemy'
 	local Wall = require 'wall'
 	local hit = nil
 	local items, _ = world:queryRect(x, y, self.width, self.height)
@@ -150,7 +150,7 @@ function Bomb:check(x, y)
 			
 			world:remove(item)
 			hit = 2
-		elseif item:is(Player) or item:is(Opponent) then
+		elseif item:is(Player) or item:is(Enemy) then
 			item.remove = false
 		end
 	end

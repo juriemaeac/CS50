@@ -131,7 +131,7 @@ end
 
 function Bomb:check(x, y)
 	local Enemy = require 'enemy'
-	local Opponent = require 'opponent'
+	local Player = require 'player'
 	local Wall = require 'wall'
 	local hit = nil
 	local items, _ = world:queryRect(x, y, self.width, self.height)
@@ -155,7 +155,7 @@ end
 
 function Bomb:checkTiles()
 	local Enemy = require 'enemy'
-	local Opponent = require 'opponent'
+	local Player = require 'player'
 	local Wall = require 'wall'
 	local collisions = {}
 	local tiles = {map:toTile(self.position)}
