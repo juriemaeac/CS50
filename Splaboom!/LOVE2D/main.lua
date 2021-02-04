@@ -43,6 +43,7 @@ function love.load() -----------------------------------------------------------
 	player = Player(15, 15)
 	world:add(player, player.position.x, player.position.y, player.width, player.height)
 	
+	--FOR ADDITIONAL PLAYER 
 	--enemy1 = Enemy(15 * 17, 15 * 11) lower right ung location (pwede pang AI)
 	enemy2 = Enemy(15 * 17, 15)
 	--enemy3 = Enemy(15, 15 * 11) lower left ung location (pwede pang AI)

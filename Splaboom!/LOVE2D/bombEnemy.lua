@@ -26,7 +26,7 @@ function Bomb:new(enemy, x, y)
 	self.sprite = sodapop.newAnimatedSprite(self:center():unpack())
 
 	self.sprite:addAnimation('idle', {
-		image	= love.graphics.newImage('res/sprites/bomb_green.png'),
+		image	= love.graphics.newImage('res/sprites/bomb_blue.png'),
 		frameWidth = 15,
 		frameHeight = 15,
 		frames = {
@@ -194,7 +194,7 @@ function Bomb:addExplosion(x, y, delay)
 		)
 	
 	explosionSprite:addAnimation('explode1', {
-		image	= love.graphics.newImage('res/sprites/explosion_green.png'),
+		image	= love.graphics.newImage('res/sprites/explosion_blue.png'),
 		
 		frameWidth = 47,
 		frameHeight = 39,

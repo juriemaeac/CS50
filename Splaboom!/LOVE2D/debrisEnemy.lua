@@ -9,7 +9,7 @@ function DebrisEnemy:new(x, y)
 	self.width = 12
 	self.height = 9
 
-	self.image = love.graphics.newImage('res/sprites/debris_particlesg.png')
+	self.image = love.graphics.newImage('res/sprites/debris_particlesb.png')
 
 	self.quads = {}
 	for j = 0, 3 do
