@@ -19,6 +19,11 @@ local effects = {
 	end,
 	-- glove
 	function(player)
+		if player.speed > 30 then
+			player.speed = player.speed - 15
+		else
+			return
+		end
 	end,
 }
 
